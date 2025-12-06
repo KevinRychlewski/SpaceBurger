@@ -1,0 +1,421 @@
+/* App.css — fundo preto, layout geral e estilo do título com glow + centralização */
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700&display=swap');
+
+:root {
+  --accent: #ff8a2b;
+  --text: #eef2f6;
+  --muted: #9aa0a6;
+  --card-bg: #0b1220; /* base para cards (alterado para azul-escuro) */
+}
+
+/* reset básico */
+* {
+  box-sizing: border-box;
+}
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #000 !important;
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* canvas de fundo */
+#starfield {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background: transparent !important;
+}
+
+/* container principal sobre o canvas */
+.container {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 18px auto;
+  padding: 18px;
+}
+
+/* === HEADER: título + filtros centralizados === */
+.header-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 18px;
+  z-index: 5; /* alto o suficiente para ficar sobre o canvas e elementos */
+  pointer-events: auto;
+}
+
+/* título com estilo futurista + gradiente + glow atrás */
+/* estilo pro título “Space Burger” — futurista, gradiente + glow/neon atrás */
+.title-light {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  /* preenche o texto com gradiente roxo */
+  background: linear-gradient(
+    to right,
+    #c966ff 0%,
+    #b13bff 35%,
+    #8b2bff 65%,
+    #da6bff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;  /* necessário para usar o gradiente no texto */
+
+  position: relative;
+  margin: 0;
+  padding: 6px 12px;
+  line-height: 1;
+  letter-spacing: 1px;
+
+  /* glow interno + borda sutil */
+  text-shadow:
+    0 0 10px rgba(180, 0, 255, 0.95),
+    0 0 22px rgba(140, 0, 255, 0.88),
+    0 0 36px rgba(110, 0, 255, 0.82);
+
+  z-index: 3;
+}
+
+/* Glow mais forte e centralizado atrás do título */
+.title-light::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* largura controlada para ficar centrada sobre o texto e botões */
+  width: min(820px, 86%);
+  height: 140px;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(110, 40, 220, 0.95) 0%,
+    rgba(70, 30, 180, 0.64) 25%,
+    rgba(40, 18, 120, 0.36) 50%,
+    rgba(18, 10, 60, 0.08) 75%,
+    transparent 100%
+  );
+  filter: blur(36px);
+  z-index: -1;
+  opacity: 1;
+}
+
+/* linha fina brilhante por cima (opcional, dá 'polimento') */
+.title-light::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translateX(-50%);
+  width: min(720px, 76%);
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.14) 50%,
+    rgba(255,255,255,0) 100%);
+  filter: blur(6px);
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* botões de filtro */
+.category-filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  z-index: 3;
+}
+.category-filters button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 180ms ease, background 160ms ease, color 160ms ease;
+  position: relative;
+  z-index: 3;
+}
+.category-filters button.active,
+.category-filters button:hover {
+  background: var(--accent);
+  color: #111;
+  border-color: var(--accent);
+  box-shadow:
+    0 6px 18px rgba(255,138,43,0.12),
+    0 0 18px rgba(11,61,145,0.08);
+}
+
+/* layout principal: lista de produtos + carrinho */
+.content {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  z-index: 2;
+}
+.products-list {
+  flex: 1;
+  min-width: 0;
+  max-width: calc(100% - 340px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cart-wrapper {
+  width: 320px;
+  flex: 0 0 320px;
+}
+
+/* itens da lista de produtos - estilo azul-escuro com glow atrás */
+/* itens da lista de produtos - estilo azul-escuro com glow em volta */
+/* itens da lista de produtos - fundo */
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+
+  background: linear-gradient(180deg, #071022 0%, #0b1726 45%, #0e2030 100%);
+  border-radius: 12px;
+
+  border: 1px solid rgba(80,130,255,0.22);
+
+  box-shadow:
+    0 8px 26px rgba(2, 8, 18, 0.6),
+    0 0 14px rgba(30, 70, 150, 0.10);
+
+  transition: transform .14s ease, box-shadow .16s ease;
+  position: relative;
+  overflow: visible;
+}
+
+/* === CONTORNO NEON PERFEITO (somente bordas, nada no centro) === */
+.list-item::after {
+  content: "";
+  position: absolute;
+  inset: -4px; /* leve expansão pra fora */
+  border-radius: 14px;
+  pointer-events: none;
+  z-index: -1;
+
+  /* glow distribuído nas bordas */
+  background:
+    /* brilho forte nas bordas laterais */
+    radial-gradient(circle at left center,
+      rgba(70,130,255,0.55), transparent 70%) ,
+    radial-gradient(circle at right center,
+      rgba(70,130,255,0.55), transparent 70%) ,
+
+    /* brilho forte nas bordas superior e inferior */
+    radial-gradient(circle at top center,
+      rgba(70,130,255,0.55), transparent 70%) ,
+    radial-gradient(circle at bottom center,
+      rgba(70,130,255,0.55), transparent 70%);
+
+  filter: blur(14px);
+  opacity: 1;
+}
+
+/* hover com glow mais forte */
+.list-item:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 10px 32px rgba(2, 8, 18, 0.7),
+    0 0 34px rgba(60,130,255,0.35);
+}
+
+.list-item:hover::after {
+  filter: blur(20px);
+  opacity: 1;
+}
+
+/* restante dos estilos do card */
+.list-left { flex: 1; min-width: 0; }
+.list-name { margin: 0; font-weight: 700; color: #e8eef8; }
+.list-desc { margin-top: 6px; color: var(--muted); }
+.list-right img {
+  width: 140px;
+  height: 95px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+
+
+/* carrinho */
+.cart {
+  background: #071020;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  position: relative;
+  z-index: 2;
+}
+.flash {
+  animation: flashCart .4s;
+}
+@keyframes flashCart {
+  0% { transform: scale(1) }
+  50% { transform: scale(1.03) }
+  100% { transform: scale(1) }
+}
+
+/* responsivo */
+@media (max-width: 960px) {
+  .content {
+    flex-direction: column;
+    padding: 0 12px;
+    max-width: 100%;
+  }
+  .cart-wrapper {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+  .products-list {
+    max-width: 100%;
+  }
+  .list-right img {
+    width: 120px;
+    height: 85px;
+  }
+}
+
+/* pequeno ajuste para telas menores no glow do título */
+@media (max-width: 420px) {
+  .title-light { font-size: 2rem; }
+  .title-light::before { height: 110px; width: 92%; filter: blur(22px); }
+  .list-item::before { width: 140%; height: 160%; filter: blur(20px); }
+}
+
+/* ============================
+   ANIMAÇÃO DO ITEM VOANDO PARA A SACOLA
+   ============================ */
+.fly-to-cart {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: flyToCartAnim 0.65s ease forwards;
+}
+
+@keyframes flyToCartAnim {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.14) translate(var(--tx), var(--ty));
+    opacity: 0;
+  }
+}
+
+/* ============================
+   ANIMAÇÃO DO ITEM VOANDO PARA A SACOLA
+   ============================ */
+.fly-to-cart {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  border-radius: 12px;
+  overflow: hidden;
+  /* animation name e duração definidos abaixo por keyframes */
+  animation: flyToCartAnim 0.65s cubic-bezier(.22,.9,.33,1) forwards;
+  transform-origin: center center;
+  /* suaviza o início (evita flicker) */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.45), 0 6px 18px rgba(0,0,0,0.35);
+}
+
+@keyframes flyToCartAnim {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  35% {
+    opacity: 0.95;
+    transform: translate(calc(var(--tx) * 0.45), calc(var(--ty) * 0.45)) scale(0.86) rotate(-6deg);
+    filter: blur(0.6px);
+  }
+  65% {
+    opacity: 0.65;
+    transform: translate(calc(var(--tx) * 0.82), calc(var(--ty) * 0.82)) scale(0.36) rotate(-12deg);
+    filter: blur(1.6px);
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0.16) rotate(-18deg);
+    opacity: 0;
+    filter: blur(2.6px);
+  }
+}
+
+/* opcional: reduce flashing when many clones created */
+.fly-to-cart img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== Fix layout para Mobile ===== */
+@media (max-width: 768px) {
+  .content {
+    display: flex;
+    flex-direction: column;      /* <-- ESSENCIAL */
+    align-items: center;         /* centraliza tudo */
+    gap: 20px;
+  }
+
+  .products-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centraliza os cards */
+  }
+
+  .products-list .list-item {
+    width: 95%;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  .cart-wrapper {
+    width: 95%;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+}
+
