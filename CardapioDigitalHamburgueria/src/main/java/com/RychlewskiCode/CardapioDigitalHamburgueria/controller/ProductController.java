@@ -6,8 +6,10 @@ import com.RychlewskiCode.CardapioDigitalHamburgueria.Mapper.ProductCreateMapper
 import com.RychlewskiCode.CardapioDigitalHamburgueria.Mapper.ProductMapper;
 import com.RychlewskiCode.CardapioDigitalHamburgueria.entity.ProductEntity;
 import com.RychlewskiCode.CardapioDigitalHamburgueria.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,15 +59,19 @@ public class ProductController {
 
     // CREATE
     @PostMapping("/create")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductCreateDTO dto) {
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductCreateDTO dto) {
         ProductDTO createdProduct = productService.createProduct(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductCreateDTO dto) {
-        ProductDTO updatedProduct = productService.updateProduct(id, dto);
-        return ResponseEntity.ok(updatedProduct);
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductCreateDTO dto) {
+        if (productService.getProductById(id) != null) {
+            ProductDTO updatedProduct = productService.updateProduct(id, dto);
+            return ResponseEntity.ok(updatedProduct);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }
